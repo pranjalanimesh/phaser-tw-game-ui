@@ -8,7 +8,7 @@ const PhaserGame = () => {
 
     useEffect(() => {
         let socket;
-        let villagerSprites = [];
+        const villagerSprites = [];
 
         const config = {
             type: Phaser.AUTO,
