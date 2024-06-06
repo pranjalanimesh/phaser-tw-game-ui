@@ -37,26 +37,33 @@ const PhaserGame = () => {
             villageBGNight.setScale(0.25);
             let x = false;
 
-            setInterval(() => {
-                console.log("changing background");
-                console.log(x)
+            function day(){
+                villageBGDay.setAlpha(1);
+                villageBGNight.setAlpha(0);
+            }
+            function night(){
+                villageBGDay.setAlpha(0);
+                villageBGNight.setAlpha(1);
+            }
 
-                if (x) {
-                    villageBGDay.setAlpha(1);
-                    villageBGNight.setAlpha(0);
-                    console.log("day");
-                    console.log("to night")
-                }
-                else {
-                    villageBGDay.setAlpha(0);
-                    villageBGNight.setAlpha(1);
-                    console.log("night");
-                    console.log("to day")
-                }
+            // setInterval(() => {
+            //     console.log("changing background");
+            //     console.log(x)
 
-                x= !x;
+            //     if (x) {
+            //         day();
+            //         console.log("day");
+            //         console.log("to night")
+            //     }
+            //     else {
+            //         night();
+            //         console.log("night");
+            //         console.log("to day")
+            //     }
 
-            }, 25000);
+            //     x= !x;
+
+            // }, 2000);
 
 			// Connect to WebSocket server
 			socket = new WebSocket("ws://localhost:6789");
@@ -84,6 +91,16 @@ const PhaserGame = () => {
 						villagerSprites[index].setPosition(villager.x, villager.y);
 					});
 				}
+
+                console.log(gameState.isDay)
+
+                if (gameState.isDay === true){
+                    night();
+                } else {
+                    day();
+                }
+
+                
 			};
 		}
 
