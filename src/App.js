@@ -189,10 +189,10 @@ const App = () => {
 	if (init) {
 		return (
 			<div className="App">
-				{/* <h1>Townsfolks vs Werewolves</h1>
-        <div className="PhaserGame">
-          <PhaserGame />
-        </div> */}
+				<h1>Townsfolks vs Werewolves</h1>
+				<div className="PhaserGame">
+					<PhaserGame />
+				</div>
 
 				<div id="particles">
 					<Particles
