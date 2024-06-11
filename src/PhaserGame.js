@@ -134,14 +134,37 @@ const PhaserGame = () => {
                     // console.log(gameState.isDay)
 
                     // Handle transition between day and night
-                    this.tweens.add({
-                        targets: [villageBGDay, villageBGNight],
-                        alpha: { value: gameState.blendFactor, duration: 2000, ease: 'Power1' },
-                        onUpdate: () => {
-                        villageBGDay.setAlpha(gameState.blendFactor);
-                        villageBGNight.setAlpha(1 - gameState.blendFactor);
+ // If blendFactor is 0, set the alpha directly to reflect day or night.
+                    if (gameState.blendFactor === 0) {
+                        if (gameState.isDay) {
+                            villageBGDay.setAlpha(0);
+                            villageBGNight.setAlpha(1);
+                        } else {
+                            villageBGDay.setAlpha(1);
+                            villageBGNight.setAlpha(0);
                         }
-                    });
+                    } else {
+                        // Kill any existing tweens on the images to avoid conflicts.
+                        this.tweens.killTweensOf([villageBGDay, villageBGNight]);
+                        const duration = 30000 * (1 - gameState.blendFactor);
+
+                        // Start a new tween to transition the alpha values based on gameState.isDay.
+                        this.tweens.add({
+                            targets: [villageBGDay, villageBGNight],
+                            alpha: { value: 1, duration: duration, ease: 'Power1' },
+                            onUpdate: (tween) => {
+                                const value = tween.getValue();
+                                if (gameState.isDay) {
+                                    villageBGDay.setAlpha(value * gameState.blendFactor);
+                                    villageBGNight.setAlpha(1 - (value * gameState.blendFactor));
+                                } else {
+                                    villageBGDay.setAlpha(1 - (value * gameState.blendFactor));
+                                    villageBGNight.setAlpha(value * gameState.blendFactor);
+                                }
+                            }
+                        });
+
+                    }
 
                               // Handle speech bubble
                     gameState.villagers.forEach((villager, index) => {
