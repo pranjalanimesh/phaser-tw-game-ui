@@ -201,22 +201,80 @@ const PhaserGame = () => {
             console.log("trying to speak")
             console.log("villagerSprite",villagerSprite)
 
-            if(villagerSprite){
-                const speechBubble = this.add
-                .text(villagerSprite.x, villagerSprite.y - 50, gameState.conversations[0].conversation, {
-                  font: "16px Arial",
+              if (villagerSprite) {
+                const padding = 10;
+                const borderRadius = 5;
+                const arrowHeight = 10;
+                const arrowWidth = 20;
+                const text = gameState.conversations[0].conversation;
+
+                // Create a text object to measure its dimensions
+                const tempText = this.add.text(0, 0, text, {
+                  font: "11px Arial",
                   fill: "#000",
-                  backgroundColor: "#fff",
-                  padding: { x: 10, y: 5 },
-                  borderRadius: 5,
-                })
-                .setOrigin(0.5, 0.5);
+                  padding: { x: padding, y: padding },
+                });
+                const textWidth = tempText.width;
+                const textHeight = tempText.height;
+                tempText.destroy(); // Destroy the temporary text object
+
+                // Create a graphics object for the speech bubble background
+                const bubbleWidth = textWidth + padding * 2;
+                const bubbleHeight = textHeight + padding * 2 + arrowHeight;
+
+                const speechBubbleGraphics = this.add.graphics();
+                speechBubbleGraphics.fillStyle(0xffffff, 1); // White background
+                speechBubbleGraphics.lineStyle(1, 0x000000, 1); // Black border
+                speechBubbleGraphics.strokeRoundedRect(
+                  villagerSprite.x - bubbleWidth / 2,
+                  villagerSprite.y - bubbleHeight - 50,
+                  bubbleWidth,
+                  bubbleHeight - arrowHeight,
+                  borderRadius
+                );
+                speechBubbleGraphics.fillRoundedRect(
+                  villagerSprite.x - bubbleWidth / 2,
+                  villagerSprite.y - bubbleHeight - 50,
+                  bubbleWidth,
+                  bubbleHeight - arrowHeight,
+                  borderRadius
+                );
+
+                // Draw the arrow pointing downwards
+                speechBubbleGraphics.beginPath();
+                speechBubbleGraphics.moveTo(villagerSprite.x, villagerSprite.y - 50);
+                speechBubbleGraphics.lineTo(
+                  villagerSprite.x - arrowWidth / 2,
+                  villagerSprite.y - 50 - arrowHeight
+                );
+                speechBubbleGraphics.lineTo(
+                  villagerSprite.x + arrowWidth / 2,
+                  villagerSprite.y - 50 - arrowHeight
+                );
+                speechBubbleGraphics.closePath();
+                speechBubbleGraphics.fillPath();
+                speechBubbleGraphics.strokePath();
+
+                // Add the text on top of the speech bubble
+                const speechBubbleText = this.add
+                  .text(
+                    villagerSprite.x,
+                    villagerSprite.y - bubbleHeight - 50 + padding,
+                    text,
+                    {
+                      font: "11px Arial",
+                      fill: "#000",
+                      padding: { x: padding, y: padding },
+                    }
+                  )
+                  .setOrigin(0.5, 0);
 
                 setTimeout(() => {
-                    speechBubble.destroy();
-                    }
-                , 5000); // Remove speech bubble after 5 seconds
-            }
+                  speechBubbleGraphics.destroy();
+                  speechBubbleText.destroy();
+                }, 5000); // Remove speech bubble after 5 seconds
+              }
+
           }
         };
       }
