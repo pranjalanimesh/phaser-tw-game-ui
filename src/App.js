@@ -175,6 +175,7 @@ const App = () => {
 
 	// this should be run only once per application lifetime
 	useEffect(() => {
+		localStorage.removeItem('conversations')
 		initParticlesEngine(async (engine) => {
 			await loadSlim(engine);
 		}).then(() => {
