@@ -27,9 +27,16 @@ const PhaserGame = () => {
         super({ key: "MainScene" });
       }
       preload() {
-        this.load.image("villageDay", "assets/map1_day_upscaled.png");
-        this.load.image("villageNight", "assets/map1_night_upscaled.png");
+        this.load.image("villageDay", "assets/images/maps/map3_day_scaled.png");
+        this.load.image("villageNight", "assets/images/maps/map3_night_scaled.png");
         this.load.image("player", "assets/player.png");
+        this.load.image("sam","assets/images/characters/sam.png");
+        this.load.image("maria","assets/images/characters/maria.png");
+        this.load.image("jack","assets/images/characters/jack.png");
+        this.load.image("julia","assets/images/characters/julia.png");
+        this.load.image("ronald","assets/images/characters/ronald.png");
+        this.load.image("vil","assets/images/characters/vil.png");
+        this.load.image("werewolf","assets/images/characters/werewolf.png");
         this.load.scenePlugin(
           "HouseLayout",
           HouseLayout,
@@ -39,12 +46,30 @@ const PhaserGame = () => {
       }
 
       create() {
-        const villageBGNight = this.add.image(640, 357, "villageDay");
-        const villageBGDay = this.add.image(640, 360, "villageNight");
-        villageBGDay.setScale(0.25);
-        villageBGNight.setScale(0.25);
-        villageBGDay.setAlpha(0);
-        villageBGNight.setAlpha(1);
+        const containerWidth = 1550
+        const containerHeight = 900
+      
+        // Add images at the center of the container
+        const villageBGNight = this.add.image(containerWidth/2, containerHeight / 2, "villageDay")
+        const villageBGDay = this.add.image(containerWidth/2, containerHeight / 2, "villageNight")
+      
+        // Image dimensions
+        villageBGDay.setDisplaySize(containerWidth, containerHeight)
+        villageBGNight.setDisplaySize(containerWidth, containerHeight)
+      
+        // Calculate scale factors
+        // const scaleX = containerWidth / imageWidth
+        // const scaleY = containerHeight / imageHeight
+        
+        // // Determine the larger scale factor to cover the container
+
+        // const scale = Math.min(scaleX, scaleY)
+        // console.log("scale",scale)
+        
+        // villageBGDay.setScale(0.75)
+        // villageBGNight.setScale(0.75)
+        // villageBGDay.setPosition(containerWidth / 2, containerHeight / 2)
+        // villageBGNight.setPosition(containerWidth / 2, containerHeight / 2)
 
         // Popup template for displaying details
         let popup = this.add
@@ -116,7 +141,7 @@ const PhaserGame = () => {
           if (villagerSprites.length === 0) {
             gameState.villagers.forEach((villager, index) => {
               const sprite = this.add
-                .sprite(villager.x, villager.y, "player")
+                .sprite(villager.x, villager.y, villager.agent_id.toLowerCase())
                 .setScale(0.4)
                 .setInteractive();
               sprite.setData("agent_id", villager.agent_id);
@@ -284,8 +309,8 @@ const PhaserGame = () => {
 
     const config = {
       type: Phaser.AUTO,
-      width: 1280,
-      height: 720,
+      width: 1500,
+      height: 900,
       parent: gameContainer.current,
       scene: [MainScene, HouseLayout], // Adding scenes here
     };
@@ -333,7 +358,7 @@ const PhaserGame = () => {
           <div
             style={{
               backgroundColor: "#fff",
-              padding: "10px",
+              padding: "14px",
               border: "1px solid #333",
               maxHeight: "300px",
               overflowY: "scroll",
