@@ -5,6 +5,16 @@ import HouseLayout from "./HouseLayout";
 
 import { houseLocations, taskLocations } from "./constants/locations";
 
+
+
+
+const speakText = (text) => {
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'ja-JP'; // Japanese language
+  console.log("utterance",utterance)
+  speechSynthesis.speak(utterance);
+};
+
 const PhaserGame = () => {
   const gameContainer = useRef(null);
   const [villagers, setVillagers] = useState([]);
@@ -17,9 +27,11 @@ const PhaserGame = () => {
   let villagerSprites = [];
   let villagerLabels = []; // T
 
+
   useEffect(() => {
     let socket;
     const villagerSprites = [];
+    let morningMeetingText
     // localStorage.removeItem('conversations')
 
     class MainScene extends Phaser.Scene {
@@ -27,9 +39,16 @@ const PhaserGame = () => {
         super({ key: "MainScene" });
       }
       preload() {
-        this.load.image("villageDay", "assets/map1_day_upscaled.png");
-        this.load.image("villageNight", "assets/map1_night_upscaled.png");
+        this.load.image("villageDay", "assets/images/maps/map3_day_scaled.png");
+        this.load.image("villageNight", "assets/images/maps/map3_night_scaled.png");
         this.load.image("player", "assets/player.png");
+        this.load.image("sam","assets/images/characters/sam.png");
+        this.load.image("maria","assets/images/characters/maria.png");
+        this.load.image("jack","assets/images/characters/jack.png");
+        this.load.image("julia","assets/images/characters/julia.png");
+        this.load.image("ronald","assets/images/characters/ronald.png");
+        this.load.image("vil","assets/images/characters/vil.png");
+        this.load.image("louis","assets/images/characters/werewolf.png");
         this.load.scenePlugin(
           "HouseLayout",
           HouseLayout,
@@ -39,12 +58,30 @@ const PhaserGame = () => {
       }
 
       create() {
-        const villageBGNight = this.add.image(640, 357, "villageDay");
-        const villageBGDay = this.add.image(640, 360, "villageNight");
-        villageBGDay.setScale(0.25);
-        villageBGNight.setScale(0.25);
-        villageBGDay.setAlpha(0);
-        villageBGNight.setAlpha(1);
+        const containerWidth = 1550
+        const containerHeight = 900
+      
+        // Add images at the center of the container
+        const villageBGNight = this.add.image(containerWidth/2, containerHeight / 2, "villageDay")
+        const villageBGDay = this.add.image(containerWidth/2, containerHeight / 2, "villageNight")
+      
+        // Image dimensions
+        villageBGDay.setDisplaySize(containerWidth, containerHeight)
+        villageBGNight.setDisplaySize(containerWidth, containerHeight)
+      
+        // Calculate scale factors
+        // const scaleX = containerWidth / imageWidth
+        // const scaleY = containerHeight / imageHeight
+        
+        // // Determine the larger scale factor to cover the container
+
+        // const scale = Math.min(scaleX, scaleY)
+        // console.log("scale",scale)
+        
+        // villageBGDay.setScale(0.75)
+        // villageBGNight.setScale(0.75)
+        // villageBGDay.setPosition(containerWidth / 2, containerHeight / 2)
+        // villageBGNight.setPosition(containerWidth / 2, containerHeight / 2)
 
         // Popup template for displaying details
         let popup = this.add
@@ -114,9 +151,10 @@ const PhaserGame = () => {
 
           // If villagers are not created yet, create them
           if (villagerSprites.length === 0) {
+
             gameState.villagers.forEach((villager, index) => {
               const sprite = this.add
-                .sprite(villager.x, villager.y, "player")
+                .sprite(villager.x, villager.y, villager.agent_id.toLowerCase())
                 .setScale(0.4)
                 .setInteractive();
               sprite.setData("agent_id", villager.agent_id);
@@ -153,7 +191,6 @@ const PhaserGame = () => {
             // Update villagers state
             setVillagers(gameState.villagers);
           } else {
-            // Update existing villagers' positions
             gameState.villagers.forEach((villager, index) => {
               villagerSprites[index].setPosition(villager.x, villager.y);
               villagerLabels[index].setPosition(villager.x, villager.y - 20);
@@ -200,17 +237,23 @@ const PhaserGame = () => {
             const villagerSprite= villagerSprites.find(villager=>villager.getData("agent_id")===gameState.conversations[0].villager1)
             console.log("trying to speak")
             console.log("villagerSprite",villagerSprite)
-
+            const text1=gameState.translatedText
+            console.log("text1",text1)
               if (villagerSprite) {
                 const padding = 10;
                 const borderRadius = 5;
                 const arrowHeight = 10;
                 const arrowWidth = 20;
                 const text = gameState.conversations[0].conversation;
+                const displayText = `JP: ${text1}\nEN: ${text}`
+                console.log("displayText",displayText)
+                console.log("text",text)
+                console.log("text1",text1)
+              
 
                 // Create a text object to measure its dimensions
-                const tempText = this.add.text(0, 0, text, {
-                  font: "11px Arial",
+                const tempText = this.add.text(0, 0, displayText, {
+                  font: "14px Arial",
                   fill: "#000",
                   padding: { x: padding, y: padding },
                 });
@@ -254,15 +297,18 @@ const PhaserGame = () => {
                 speechBubbleGraphics.closePath();
                 speechBubbleGraphics.fillPath();
                 speechBubbleGraphics.strokePath();
+                
+                console.log("gameState.translatedText",gameState.translatedText)
+                speakText(gameState.translatedText)
 
                 // Add the text on top of the speech bubble
                 const speechBubbleText = this.add
                   .text(
                     villagerSprite.x,
                     villagerSprite.y - bubbleHeight - 50 + padding,
-                    text,
+                    displayText,
                     {
-                      font: "11px Arial",
+                      font: "14px Arial",
                       fill: "#000",
                       padding: { x: padding, y: padding },
                     }
@@ -276,6 +322,26 @@ const PhaserGame = () => {
               }
 
           }
+          // Handle morning meeting text display
+          if (gameState.is_morning_meeting) {
+            if (!morningMeetingText) {
+              morningMeetingText = this.add.text(containerWidth / 2, 100, "Morning meeting takes place", {
+                font: "32px Arial",
+                fill: "#ffffff",
+                backgroundColor: "#000000",
+                padding: { x: 20, y: 20 },
+                borderRadius: 5,
+              })
+              .setOrigin(0.5, 0.5)
+              .setDepth(1000)
+            }
+          } else {
+            if (morningMeetingText) {
+              morningMeetingText.destroy()
+              morningMeetingText = null
+            }
+          }
+
         };
       }
 
@@ -284,8 +350,8 @@ const PhaserGame = () => {
 
     const config = {
       type: Phaser.AUTO,
-      width: 1280,
-      height: 720,
+      width: 1500,
+      height: 900,
       parent: gameContainer.current,
       scene: [MainScene, HouseLayout], // Adding scenes here
     };
@@ -333,7 +399,7 @@ const PhaserGame = () => {
           <div
             style={{
               backgroundColor: "#fff",
-              padding: "10px",
+              padding: "14px",
               border: "1px solid #333",
               maxHeight: "300px",
               overflowY: "scroll",
