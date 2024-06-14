@@ -5,6 +5,16 @@ import HouseLayout from "./HouseLayout";
 
 import { houseLocations, taskLocations } from "./constants/locations";
 
+
+
+
+const speakText = (text) => {
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'ja-JP'; // Japanese language
+  console.log("utterance",utterance)
+  speechSynthesis.speak(utterance);
+};
+
 const PhaserGame = () => {
   const gameContainer = useRef(null);
   const [villagers, setVillagers] = useState([]);
@@ -17,9 +27,11 @@ const PhaserGame = () => {
   let villagerSprites = [];
   let villagerLabels = []; // T
 
+
   useEffect(() => {
     let socket;
     const villagerSprites = [];
+    let morningMeetingText
     // localStorage.removeItem('conversations')
 
     class MainScene extends Phaser.Scene {
@@ -36,7 +48,7 @@ const PhaserGame = () => {
         this.load.image("julia","assets/images/characters/julia.png");
         this.load.image("ronald","assets/images/characters/ronald.png");
         this.load.image("vil","assets/images/characters/vil.png");
-        this.load.image("werewolf","assets/images/characters/werewolf.png");
+        this.load.image("louis","assets/images/characters/werewolf.png");
         this.load.scenePlugin(
           "HouseLayout",
           HouseLayout,
@@ -139,6 +151,7 @@ const PhaserGame = () => {
 
           // If villagers are not created yet, create them
           if (villagerSprites.length === 0) {
+
             gameState.villagers.forEach((villager, index) => {
               const sprite = this.add
                 .sprite(villager.x, villager.y, villager.agent_id.toLowerCase())
@@ -178,7 +191,6 @@ const PhaserGame = () => {
             // Update villagers state
             setVillagers(gameState.villagers);
           } else {
-            // Update existing villagers' positions
             gameState.villagers.forEach((villager, index) => {
               villagerSprites[index].setPosition(villager.x, villager.y);
               villagerLabels[index].setPosition(villager.x, villager.y - 20);
@@ -225,17 +237,23 @@ const PhaserGame = () => {
             const villagerSprite= villagerSprites.find(villager=>villager.getData("agent_id")===gameState.conversations[0].villager1)
             console.log("trying to speak")
             console.log("villagerSprite",villagerSprite)
-
+            const text1=gameState.translatedText
+            console.log("text1",text1)
               if (villagerSprite) {
                 const padding = 10;
                 const borderRadius = 5;
                 const arrowHeight = 10;
                 const arrowWidth = 20;
                 const text = gameState.conversations[0].conversation;
+                const displayText = `JP: ${text1}\nEN: ${text}`
+                console.log("displayText",displayText)
+                console.log("text",text)
+                console.log("text1",text1)
+              
 
                 // Create a text object to measure its dimensions
-                const tempText = this.add.text(0, 0, text, {
-                  font: "11px Arial",
+                const tempText = this.add.text(0, 0, displayText, {
+                  font: "14px Arial",
                   fill: "#000",
                   padding: { x: padding, y: padding },
                 });
@@ -279,15 +297,18 @@ const PhaserGame = () => {
                 speechBubbleGraphics.closePath();
                 speechBubbleGraphics.fillPath();
                 speechBubbleGraphics.strokePath();
+                
+                console.log("gameState.translatedText",gameState.translatedText)
+                speakText(gameState.translatedText)
 
                 // Add the text on top of the speech bubble
                 const speechBubbleText = this.add
                   .text(
                     villagerSprite.x,
                     villagerSprite.y - bubbleHeight - 50 + padding,
-                    text,
+                    displayText,
                     {
-                      font: "11px Arial",
+                      font: "14px Arial",
                       fill: "#000",
                       padding: { x: padding, y: padding },
                     }
@@ -301,6 +322,26 @@ const PhaserGame = () => {
               }
 
           }
+          // Handle morning meeting text display
+          if (gameState.is_morning_meeting) {
+            if (!morningMeetingText) {
+              morningMeetingText = this.add.text(containerWidth / 2, 100, "Morning meeting takes place", {
+                font: "32px Arial",
+                fill: "#ffffff",
+                backgroundColor: "#000000",
+                padding: { x: 20, y: 20 },
+                borderRadius: 5,
+              })
+              .setOrigin(0.5, 0.5)
+              .setDepth(1000)
+            }
+          } else {
+            if (morningMeetingText) {
+              morningMeetingText.destroy()
+              morningMeetingText = null
+            }
+          }
+
         };
       }
 
