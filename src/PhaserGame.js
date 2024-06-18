@@ -42,13 +42,13 @@ const PhaserGame = () => {
         this.load.image("villageDay", "assets/images/maps/map3_day_scaled.png");
         this.load.image("villageNight", "assets/images/maps/map3_night_scaled.png");
         this.load.image("player", "assets/player.png");
-        this.load.image("sam","assets/images/characters/sam.png");
-        this.load.image("maria","assets/images/characters/maria.png");
-        this.load.image("jack","assets/images/characters/jack.png");
-        this.load.image("julia","assets/images/characters/julia.png");
-        this.load.image("ronald","assets/images/characters/ronald.png");
+        this.load.image("akio","assets/images/characters/akio.png");
+        this.load.image("chiyo","assets/images/characters/chiyo.png");
+        this.load.image("hana","assets/images/characters/hana.png");
+        this.load.image("izumi","assets/images/characters/izumi.png");
+        this.load.image("kaio","assets/images/characters/kaio.png");
         this.load.image("vil","assets/images/characters/vil.png");
-        this.load.image("louis","assets/images/characters/werewolf.png");
+        this.load.image("katsumi","assets/images/characters/katsumi.png");
         this.load.scenePlugin(
           "HouseLayout",
           HouseLayout,
