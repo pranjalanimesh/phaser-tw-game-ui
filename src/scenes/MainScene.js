@@ -135,8 +135,7 @@ class MainScene extends Phaser.Scene {
         this.popup
           .setText([
             `Name: ${villager.agent_id}`,
-            `Role: ${villager.agent_id === "Louis" ? "Werewolf" : "Villager"}`,
-            `Age: aksjd`,
+            `Role: ${villager.agent_id === "Katsumi" ? "Werewolf" : "Villager"}`
           ])
           .setPosition(sprite.x, sprite.y - 50)
           .setVisible(true);
