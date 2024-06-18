@@ -1,9 +1,9 @@
-// src/HouseLayout.js
+// src/HouseScene.js
 import Phaser from 'phaser';
 
-class HouseLayout extends Phaser.Scene {
+class HouseScene extends Phaser.Scene {
   constructor() {
-    super({ key: 'HouseLayout' });
+    super({ key: 'HouseScene' });
   }
 
   init(data) {
@@ -12,12 +12,12 @@ class HouseLayout extends Phaser.Scene {
   }
 
   preload() {
-    // Load assets for the house layout
-    this.load.image('houseLayout', 'assets/house_layout2.webp');
+    // Load assets for the house Scene
+    this.load.image('houseScene', 'assets/images/maps/house_layout2.webp');
   }
 
   create() {
-    this.add.image(640, 360, 'houseLayout').setScale(0.5);
+    this.add.image(640, 360, 'houseScene').setScale(0.5);
     this.add.text(640, 50, `House ${this.houseNumber}`, {
       font: '32px Arial',
       fill: '#ffffff'
@@ -38,11 +38,11 @@ class HouseLayout extends Phaser.Scene {
   }
 
   update() {
-    // Update logic for the house layout scene
+    // Update logic for the house Scene 
   }
   boot() {
-    console.log('HouseLayout scene booted');
+    console.log('HouseScene  booted');
   } 
 }
 
-export default HouseLayout;
+export default HouseScene;
