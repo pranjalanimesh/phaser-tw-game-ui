@@ -17,14 +17,16 @@ class HouseScene extends Phaser.Scene {
   }
 
   create() {
-    this.add.image(640, 360, 'houseScene').setScale(0.5);
-    this.add.text(640, 50, `House ${this.houseNumber}`, {
+    this.HouseScene=this.add.image(750, 450, 'houseScene').setScale(0.5);
+    this.add.text(750, 20, `House ${this.houseNumber}`, {
       font: '32px Arial',
-      fill: '#ffffff'
+      fill: '#ffffff',
+      backgroundColor: '#000000',
     }).setOrigin(0.5);
 
+    this.HouseScene.setDisplaySize(1500, 900);
     // Add door emoji label
-    const doorLabel = this.add.text(1000, 600, '🚪 Exit', {
+    const doorLabel = this.add.text(1050, 800, '🚪 Exit', {
       font: '24px Arial',
       fill: '#ffffff',
       backgroundColor: '#000000',

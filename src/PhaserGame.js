@@ -40,8 +40,13 @@ const PhaserGame = () => {
   };
 
   return (
-    <div ref={gameContainer}>
-      <div style={styles.controlPanel}>
+    <div style={styles.gameContainer} ref={gameContainer}>
+      <div style={{
+          position: "absolute",
+          top: "10px",
+          right: "10px",
+          zIndex: 1000,
+        }}>
         <button onClick={handleHistoryToggle} style={styles.toggleButton}>
           {showHistory ? 'Hide' : 'Show'} Conversation History
         </button>
@@ -51,10 +56,10 @@ const PhaserGame = () => {
               conversations.map((conv, index) => (
                 <div key={index} style={styles.conversation}>
                   <strong>{conv.villager1} and {conv.villager2}:</strong>
-                  <p>{conv.conversation}</p>
+                  <p style={styles.convoLine}>{conv.conversation}</p>
                 </div>
               ))
-            ) : <p>No conversations yet.</p>}
+            ) : <p style={styles.convoLine}>No conversations yet.</p>}
           </div>
         )}
       </div>

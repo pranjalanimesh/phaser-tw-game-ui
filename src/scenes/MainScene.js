@@ -30,16 +30,8 @@ class MainScene extends Phaser.Scene {
     const containerHeight = 900;
 
     // Add images at the center of the container
-    this.villageBGNight = this.add.image(
-      containerWidth / 2,
-      containerHeight / 2,
-      "villageDay"
-    );
-    this.villageBGDay = this.add.image(
-      containerWidth / 2,
-      containerHeight / 2,
-      "villageNight"
-    );
+    this.villageBGNight = this.add.image(750, 450, "villageDay");
+    this.villageBGDay = this.add.image(750, 450, "villageNight");
 
     // Image dimensions
     this.villageBGDay.setDisplaySize(containerWidth, containerHeight);
