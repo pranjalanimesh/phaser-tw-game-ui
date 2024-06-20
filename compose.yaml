@@ -1,0 +1,15 @@
+version: '3'
+services:
+  server:
+    build:
+      context: .
+    environment:
+      - NODE_ENV=development
+      - BACKEND_URL=ws://<YOUR_BACKEND_IP>:5000
+    ports:
+      - 6790:6789
+      - 3000:3000
+
+networks:
+  game-network:
+    driver: bridge
