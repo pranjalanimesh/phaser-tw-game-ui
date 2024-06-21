@@ -24,6 +24,7 @@ class MainScene extends Phaser.Scene {
     this.load.image("kaio", "assets/images/characters/kaio.png");
     this.load.image("vil", "assets/images/characters/vil.png");
     this.load.image("katsumi", "assets/images/characters/katsumi.png");
+    this.load.image("madara", "assets/images/characters/katsumi.png");
     this.load.scenePlugin("HouseScene", HouseScene, "houseScene", "houseScene");
   }
 
