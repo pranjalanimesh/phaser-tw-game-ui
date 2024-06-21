@@ -10,6 +10,8 @@ class MainScene extends Phaser.Scene {
   init(data) {
     this.socket = data.socket;
     this.setConversations = data.setConversations;
+    this.setVillagerMemories = data.setVillagerMemories
+    this.setVillagers=data.setVillagers
   }
   preload() {
     this.load.image("villageDay", "assets/images/maps/map3_day_scaled.png");
@@ -87,6 +89,7 @@ class MainScene extends Phaser.Scene {
     this.socket.onmessage = (event) => {
       // Parse the JSON message
       const gameState = JSON.parse(event.data);
+      console.log("gamestate.memories",gameState.villager_memories)
       // console.log("gamestate.isDay", gameState.isDay)
       // console.log("gameState.blendFactor",gameState.blendFactor)
       console.log("gameState.is_morning_meeting", gameState.is_morning_meeting);
@@ -107,6 +110,9 @@ class MainScene extends Phaser.Scene {
       this.handleDayNightTransition(gameState);
 
       this.handleMorningMeeting(gameState);
+
+      this.setVillagerMemories(gameState.villager_memories)
+      this.setVillagers(gameState.villagers)
     };
   }
 
