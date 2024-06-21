@@ -1,11 +1,11 @@
 export const taskLocations = [
-    { x: 1170, y: 650, label: "Gather food" },
-    { x: 1170, y: 200, label: "Build a house" },
-    { x: 1470, y: 100, label: "Collect wood" },
-    { x: 140, y: 700, label: "Fetch water" },
+    { x: 1200, y: 650, label: "Gather food" },
+    { x: 1200, y: 200, label: "Build a house" },
+    { x: 800, y: 650, label: "Collect wood" },
+    { x: 140, y: 400, label: "Fetch water" },
     { x: 970, y: 450, label: "Guard the village", },
     { x: 470, y: 650, label: "Cook food", },
-    { x: 170, y: 100, label: "Hunt for animals", },
+    { x: 170, y: 200, label: "Hunt for animals", },
     { x: 670, y: 400, label: "Scout the area", },
     { x: 470, y: 400, label: "Heal the injured", },
     { x: 770, y: 200, label: "Teach children", }
