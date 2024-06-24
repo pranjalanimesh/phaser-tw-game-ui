@@ -125,7 +125,7 @@ class MainScene extends Phaser.Scene {
         }
       });
 
-      console.log("gamestate.memories",gameState.villager_memories)
+      // console.log("gamestate.memories",gameState.villager_memories)
       // console.log("gamestate.isDay", gameState.isDay)
       // console.log("gameState.blendFactor",gameState.blendFactor)
       console.log("gameState.is_morning_meeting", gameState.is_morning_meeting);
@@ -154,6 +154,7 @@ class MainScene extends Phaser.Scene {
 
   createVillagers(villagers) {
     villagers.forEach((villager, index) => {
+
       const sprite = this.add
         .sprite(villager.x, villager.y, villager.agent_id.toLowerCase())
         .setScale(0.25)
@@ -186,6 +187,11 @@ class MainScene extends Phaser.Scene {
         console.log("pointer out");
         this.popup.setVisible(false);
       });
+
+      if (villager.alive === false) {
+        sprite.rotation = Math.PI / 2;
+        console.log(`${villager.agent_id} villager is dead`);
+      }
     });
   }
 
