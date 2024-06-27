@@ -17,7 +17,7 @@ const PhaserGame = () => {
   const [villagers, setVillagers] = useState([]);
 
   useEffect(() => {
-    const socket = new WebSocket("ws://localhost:6789");
+    const socket = new WebSocket("ws://192.168.23.138:6789");
     const config = {
       type: Phaser.AUTO,
       width: 1500,
@@ -52,7 +52,6 @@ const PhaserGame = () => {
           top: "10px",
           right: "10px",
           zIndex: 1000,
-          backgroundColor: "#000",
           overflowY: 'scroll',
           width: '300px', // Fixed width for the container
           height: '400px',

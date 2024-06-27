@@ -19,7 +19,7 @@ const styles = {
     },
     historyPanel: {
       maxHeight: '400px',
-      backgroundColor: '#fff',
+      backgroundColor: '#000',
       padding: '10px',
       border: '1px solid #333',
       maxHeight: '300px',
