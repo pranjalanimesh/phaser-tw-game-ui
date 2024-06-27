@@ -17,7 +17,7 @@ const PhaserGame = () => {
   const [villagers, setVillagers] = useState([]);
 
   useEffect(() => {
-    const socket = new WebSocket("ws://192.168.23.138:6789");
+    const socket = new WebSocket("ws://localhost:6789");
     const config = {
       type: Phaser.AUTO,
       width: 1500,
