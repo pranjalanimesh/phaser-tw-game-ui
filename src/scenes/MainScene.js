@@ -196,10 +196,15 @@ class MainScene extends Phaser.Scene {
   }
 
   updateVillagers(villagers) {
-    villagers.forEach((villager, index) => {
-      this.villagerSprites[index].setPosition(villager.x, villager.y);
-      this.villagerLabels[index].setPosition(villager.x, villager.y + 20);
-    });
+    try{
+
+      villagers.forEach((villager, index) => {
+        this.villagerSprites[index].setPosition(villager.x, villager.y);
+        this.villagerLabels[index].setPosition(villager.x, villager.y + 20);
+      });
+    } catch (error) {
+      console.log("Error updating villagers", error)
+    }
   }
 
   handleDayNightTransition(gameState) {
