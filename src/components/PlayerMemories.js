@@ -53,7 +53,7 @@ const styles = {
 
 const PlayerMemories = ({ players, villagerMemories }) => {
   const [selectedPlayer, setSelectedPlayer] = useState('')
-  const [isVisible, setIsVisible] = useState(true)
+  const [isVisible, setIsVisible] = useState(false)
 
   const handlePlayerChange = (e) => {
     setSelectedPlayer(e.target.value)

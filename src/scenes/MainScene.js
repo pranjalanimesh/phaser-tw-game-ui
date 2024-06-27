@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { houseLocations, taskLocations } from "../constants/locations";
+import { houseLocations } from "../constants/locations";
 import HouseScene from "./HouseScene";
 import { speakText } from "../utils/gameUtils";
 
@@ -24,6 +24,7 @@ class MainScene extends Phaser.Scene {
     this.load.image("kaio", "assets/images/characters/kaio.png");
     this.load.image("vil", "assets/images/characters/vil.png");
     this.load.image("katsumi", "assets/images/characters/katsumi.png");
+    this.load.image("madara", "assets/images/characters/katsumi.png");
     this.load.scenePlugin("HouseScene", HouseScene, "houseScene", "houseScene");
   }
 
@@ -51,18 +52,7 @@ class MainScene extends Phaser.Scene {
       .setVisible(false);
     this.popup.setDepth(1000);
 
-    taskLocations.forEach((task) => {
-      this.add
-        .text(task.x, task.y, `* ${task.label} `, {
-          font: "18px Arial",
-          fill: "#ffffff",
-          backgroundColor: "#000000",
-          padding: { x: 10, y: 5 },
-          borderRadius: 5,
-        })
-        .setOrigin(0.5, 0.5)
-        .setScrollFactor(0); // Ensure labels don't move with the camera if it's used
-    });
+
     houseLocations.forEach((house) => {
       this.add
         .text(house.x, house.y, `${house.emoji} ${house.label} `, {
@@ -89,7 +79,53 @@ class MainScene extends Phaser.Scene {
     this.socket.onmessage = (event) => {
       // Parse the JSON message
       const gameState = JSON.parse(event.data);
-      console.log("gamestate.memories",gameState.villager_memories)
+
+      // console.log("gamestate.tasks", gameState.tasks)
+
+      gameState.tasks.forEach((task) => {
+        // console.log("task", task);
+        
+        if(task.sabotaged){
+          this.add
+          .text(task.x, task.y, `* ${task.label} `, {
+            font: "12px Arial",
+            fill: "#000000",
+            backgroundColor: "#ff0000",
+            padding: { x: 7, y: 3 },
+            borderRadius: 5,
+          })
+          .setOrigin(0.5, 0.5)
+          .setAlpha(0.3)
+          .setScrollFactor(0); // Ensure labels don't move with the camera if it's used
+        }
+        else if (task.completed) {
+          this.add
+          .text(task.x, task.y, `* ${task.label} `, {
+            font: "12px Arial",
+            fill: "#000000",
+            backgroundColor: "#00ff00",
+            padding: { x: 7, y: 3 },
+            borderRadius: 5,
+          })
+          .setOrigin(0.5, 0.5)
+          .setAlpha(0.3)
+          .setScrollFactor(0); // Ensure labels don't move with the camera if it's used
+        } else {
+          this.add
+          .text(task.x, task.y, `* ${task.label} `, {
+            font: "12px Arial",
+            fill: "#ffffff",
+            backgroundColor: "#000000",
+            padding: { x: 7, y: 3 },
+            borderRadius: 5,
+          })
+          .setOrigin(0.5, 0.5)
+          .setAlpha(0.5)
+          .setScrollFactor(0);
+        }
+      });
+
+      // console.log("gamestate.memories",gameState.villager_memories)
       // console.log("gamestate.isDay", gameState.isDay)
       // console.log("gameState.blendFactor",gameState.blendFactor)
       console.log("gameState.is_morning_meeting", gameState.is_morning_meeting);
@@ -118,9 +154,10 @@ class MainScene extends Phaser.Scene {
 
   createVillagers(villagers) {
     villagers.forEach((villager, index) => {
+
       const sprite = this.add
         .sprite(villager.x, villager.y, villager.agent_id.toLowerCase())
-        .setScale(0.4)
+        .setScale(0.25)
         .setInteractive();
       sprite.setData("agent_id", villager.agent_id);
       sprite.setInteractive(
@@ -129,10 +166,10 @@ class MainScene extends Phaser.Scene {
       );
       this.villagerSprites.push(sprite);
       const label = this.add
-        .text(villager.x, villager.y - 20, `ID: ${villager.agent_id}`, {
+        .text(villager.x, villager.y - 20, `${villager.agent_id}`, {
           font: "15px Arial",
           fill: "#fff",
-          backgroundColor: "#333",
+          backgroundColor: "#222",
         })
         .setOrigin(0.5, 0.5);
       this.villagerLabels.push(label);
@@ -141,7 +178,7 @@ class MainScene extends Phaser.Scene {
         this.popup
           .setText([
             `Name: ${villager.agent_id}`,
-            `Role: ${villager.agent_id === "Katsumi" ? "Werewolf" : "Villager"}`
+            `Role: ${villager.agent_id === "Katsumi" || villager.agent_id === "Madara" ? "Werewolf" : "Villager"}`
           ])
           .setPosition(sprite.x, sprite.y - 50)
           .setVisible(true);
@@ -150,14 +187,24 @@ class MainScene extends Phaser.Scene {
         console.log("pointer out");
         this.popup.setVisible(false);
       });
+
+      if (villager.alive === false) {
+        sprite.rotation = Math.PI / 2;
+        console.log(`${villager.agent_id} villager is dead`);
+      }
     });
   }
 
   updateVillagers(villagers) {
-    villagers.forEach((villager, index) => {
-      this.villagerSprites[index].setPosition(villager.x, villager.y);
-      this.villagerLabels[index].setPosition(villager.x, villager.y - 20);
-    });
+    try{
+
+      villagers.forEach((villager, index) => {
+        this.villagerSprites[index].setPosition(villager.x, villager.y);
+        this.villagerLabels[index].setPosition(villager.x, villager.y + 20);
+      });
+    } catch (error) {
+      console.log("Error updating villagers", error)
+    }
   }
 
   handleDayNightTransition(gameState) {
