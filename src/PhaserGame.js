@@ -53,7 +53,7 @@ const PhaserGame = () => {
           right: "10px",
           zIndex: 1000,
           backgroundColor: showHistory ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0)',
-          overflowY: 'scroll',
+          overflowY: showHistory ? 'scroll' : 'hidden',
           width: '300px', // Fixed width for the container
           height: '400px',
           padding: '10px',

@@ -6,6 +6,7 @@ import { speakText } from "../utils/gameUtils";
 class MainScene extends Phaser.Scene {
   constructor() {
     super({ key: "MainScene" });
+    this.taskLabels = new Set();
   }
   init(data) {
     this.socket = data.socket;
@@ -79,61 +80,18 @@ class MainScene extends Phaser.Scene {
     this.socket.onmessage = (event) => {
       // Parse the JSON message
       const gameState = JSON.parse(event.data);
-
+      this.updateTasks(gameState);
       // console.log("gamestate.tasks", gameState.tasks)
-
-      gameState.tasks.forEach((task) => {
-        // console.log("task", task);
-        
-        if(task.sabotaged){
-          this.add
-          .text(task.x, task.y, `* ${task.label} `, {
-            font: "12px Arial",
-            fill: "#000000",
-            backgroundColor: "#ff0000",
-            padding: { x: 7, y: 3 },
-            borderRadius: 5,
-          })
-          .setOrigin(0.5, 0.5)
-          .setAlpha(0.3)
-          .setScrollFactor(0); // Ensure labels don't move with the camera if it's used
-        }
-        else if (task.completed) {
-          this.add
-          .text(task.x, task.y, `* ${task.label} `, {
-            font: "12px Arial",
-            fill: "#000000",
-            backgroundColor: "#00ff00",
-            padding: { x: 7, y: 3 },
-            borderRadius: 5,
-          })
-          .setOrigin(0.5, 0.5)
-          .setAlpha(0.3)
-          .setScrollFactor(0); // Ensure labels don't move with the camera if it's used
-        } else {
-          this.add
-          .text(task.x, task.y, `* ${task.label} `, {
-            font: "12px Arial",
-            fill: "#ffffff",
-            backgroundColor: "#000000",
-            padding: { x: 7, y: 3 },
-            borderRadius: 5,
-          })
-          .setOrigin(0.5, 0.5)
-          .setAlpha(0.5)
-          .setScrollFactor(0);
-        }
-      });
 
       // console.log("gamestate.memories",gameState.villager_memories)
       // console.log("gamestate.isDay", gameState.isDay)
       // console.log("gameState.blendFactor",gameState.blendFactor)
-      console.log("gameState.is_morning_meeting", gameState.is_morning_meeting);
+      // console.log("gameState.is_morning_meeting", gameState.is_morning_meeting);
       if (gameState.isConvo) {
         this.handleConversation(gameState);
         this.handleSpeechBubble(gameState);
       } else {
-        console.log("gameState.isConvo", gameState.isConvo);
+        // console.log("gameState.isConvo", gameState.isConvo);
       }
       // console.log(gameState);
 
@@ -174,7 +132,7 @@ class MainScene extends Phaser.Scene {
         .setOrigin(0.5, 0.5);
       this.villagerLabels.push(label);
       sprite.on("pointerover", () => {
-        console.log("pointer over");
+        // console.log("pointer over");
         this.popup
           .setText([
             `Name: ${villager.agent_id}`,
@@ -184,7 +142,7 @@ class MainScene extends Phaser.Scene {
           .setVisible(true);
       });
       sprite.on("pointerout", () => {
-        console.log("pointer out");
+        // console.log("pointer out");
         this.popup.setVisible(false);
       });
 
@@ -195,6 +153,54 @@ class MainScene extends Phaser.Scene {
     });
   }
 
+  updateTasks(gameState) {
+    this.taskLabels.forEach((task) => task.destroy());
+
+    let taskObject;
+    gameState.tasks.forEach((task) => {
+      // console.log("task", task);
+      
+      if(task.sabotaged){
+        taskObject = this.add
+        .text(task.x, task.y, `* ${task.label} `, {
+          font: "12px Arial",
+          fill: "#000000",
+          backgroundColor: "#ff0000",
+          padding: { x: 7, y: 3 },
+          borderRadius: 5,
+        })
+        .setOrigin(0.5, 0.5)
+        .setAlpha(0.3)
+        .setScrollFactor(0); // Ensure labels don't move with the camera if it's used
+      }
+      else if (task.completed) {
+        taskObject = this.add
+        .text(task.x, task.y, `* ${task.label} `, {
+          font: "12px Arial",
+          fill: "#000000",
+          backgroundColor: "#00ff00",
+          padding: { x: 7, y: 3 },
+          borderRadius: 5,
+        })
+        .setOrigin(0.5, 0.5)
+        .setAlpha(0.3)
+        .setScrollFactor(0); // Ensure labels don't move with the camera if it's used
+      } else {
+        taskObject = this.add
+        .text(task.x, task.y, `* ${task.label} `, {
+          font: "12px Arial",
+          fill: "#ffffff",
+          backgroundColor: "#000000",
+          padding: { x: 7, y: 3 },
+          borderRadius: 5,
+        })
+        .setOrigin(0.5, 0.5)
+        .setAlpha(0.5)
+        .setScrollFactor(0);
+      }
+      this.taskLabels.add(taskObject);
+    });
+  }
   updateVillagers(villagers) {
     try{
 
@@ -248,10 +254,10 @@ class MainScene extends Phaser.Scene {
       (villager) =>
         villager.getData("agent_id") === gameState.conversations[0].villager1
     );
-    console.log("trying to speak");
-    console.log("villagerSprite", villagerSprite);
+    // console.log("trying to speak");
+    // console.log("villagerSprite", villagerSprite);
     const text1 = gameState.translatedText;
-    console.log("text1", text1);
+    // console.log("text1", text1);
     if (villagerSprite) {
       const padding = 10;
       const borderRadius = 5;
@@ -259,9 +265,9 @@ class MainScene extends Phaser.Scene {
       const arrowWidth = 20;
       const text = gameState.conversations[0].conversation;
       const displayText = `JP: ${text1}\nEN: ${text}`;
-      console.log("displayText", displayText);
-      console.log("text", text);
-      console.log("text1", text1);
+      // console.log("displayText", displayText);
+      // console.log("text", text);
+      // console.log("text1", text1);
 
       // Create a text object to measure its dimensions
       const tempText = this.add.text(0, 0, displayText, {
@@ -310,7 +316,7 @@ class MainScene extends Phaser.Scene {
       speechBubbleGraphics.fillPath();
       speechBubbleGraphics.strokePath();
 
-      console.log("gameState.translatedText", gameState.translatedText);
+      // console.log("gameState.translatedText", gameState.translatedText);
       speakText(gameState.translatedText);
 
       // Add the text on top of the speech bubble
@@ -335,7 +341,7 @@ class MainScene extends Phaser.Scene {
   }
 
   handleConversation(gameState) {
-    console.log("gameState.conversations", gameState.conversations[0]);
+    // console.log("gameState.conversations", gameState.conversations[0]);
     const newConversation = gameState.conversations[0];
     this.setConversations((prevConversations) => {
       const updatedConversations = [...prevConversations, newConversation];
